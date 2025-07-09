@@ -1,0 +1,37 @@
+public class GcLifecycle {
+
+    public static void main(String[] args) {
+        // 1. shortLivedObject is created in Eden.
+        //    It's referenced by a local variable (a GC Root).
+        Object shortLivedObject = new Object();
+        System.out.println("Short-lived object created: " + shortLivedObject);
+
+        // 2. The reference is nulled. The object is no longer reachable.
+        //    It will be cleaned up during the *next* Minor GC.
+        shortLivedObject = null;
+
+        // 3. Create a list that will become a long-lived object.
+        //    The ArrayList and its internal array are created in Eden.
+        List<String> longLivedList = new ArrayList<>();
+
+        // 4. This loop forces many Minor GCs to happen.
+        //    - New strings are created in Eden.
+        //    - Eden fills up, triggering a Minor GC.
+        //    - The `longLivedList` object survives each GC because it's
+        //      referenced by a local variable in main().
+        //    - After surviving enough times, it gets promoted to the Old Generation.
+        for (int i = 0; i < 100000; i++) {
+            longLivedList.add("Item " + i);
+            if (i % 1000 == 0) {
+                // Sleep to allow observation, not necessary for GC itself
+                try { Thread.sleep(5); } catch (InterruptedException e) {}
+            }
+        }
+
+        System.out.println("Long-lived list has been populated and likely promoted.");
+        System.out.println("Program will now end.");
+
+    } // 5. main() method ends. The `longLivedList` reference is gone.
+      //    The list object in the Old Generation is now unreachable and
+      //    will be cleaned up during a future Major GC.
+}
