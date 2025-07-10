@@ -1,0 +1,98 @@
+When will GC get triggered
+	-- eden space is full(minor gc)
+	-- no space in heap(major gc)
+	-- manually trigger
+	-- 
+
+10 objects p1 to p10;
+lets create 3 objects -- p1,p2,p3
+
+p1,p2,p3 -- allocated In eden space 
+
+create p4 -- big object -- not enough space in eden -> trigger minor gc
+
+p1,p2,p3 --> moved to so
+eden will be deleted
+p4--> eden
+
+p5,p6,p7 --> created --> eden
+
+Now eden --> p4 to p7
+s0 --> p1 to p3
+
+p8 created -- > not enough space in eden --> minor gc
+eden + so --> s1
+s1 --> p1 to p7
+eden and so will be deleted
+
+p5 goes out of scope --> trigger's gc 
+p1 to p4 and p6,p7 --> will be moved from s1 to s0
+eden --> empty
+
+lets say many gc's have happened
+p1 to p4 and p6,p7 --> old gen
+eden, active survivor will be deleted
+
+object is very big -- can store in old gen 
+	-- old gen -- larger in size
+	-- avoid big data movements
+	-- 
+
+young gen -- try to allocate memory continuously
+Scenario : trigger many gc's
+Create a new object -- 5mb -- 
+-- Free memory available in eden -- 7mb
+	-- memory may be allocated 
+	or
+	-- may trigger minor gc(not enough space in eden)
+		(7mb > 5mb but there may be fragmentation)
+
+
+Minor gc happened --> free up memory 
+
+app -- data intensive -- allocation and deallocation(gc)
+gc -- running on a separate thread
+minor gc -- mark and move 
+minor gc gets triggered
+-- gc thread will be created -- thread -- garbage collection -- there are dead objects -- mark and move
+	-- pause all the app threads -- STW
+		-- freeze the app
+		-- 
+	-- runs frequently -- impact the app performance -- user experience
+	-- stop it entirely -- not possible
+	-- try to optimise the gc collection triggers
+	-- reduce the pause time -- STW time
+
+gc algorithm -- very low pause times
+
+GC tuning or performance tuning
+	-- Create objects only when necessary
+	-- Optimise the size of heap(young gen)
+		minor gc's -- good
+			-- minor gc will get triggered less often
+		-- major gc's can also get triggered(free memory from both old and new gen)
+			-- heap size -- huge -- more time to mark, sweep, compact -- pause the app threads for a longer time
+	-- proper data types for data
+	-- select the appropriate gc algorithm or strategy 
+
+Various gc algorithms
+
+heap dump
+	-- see
+		-- memory size and instances count
+	-- what is not seen
+		-- allocations
+
+snapshot
+	-- see
+		-- memory sizes and allocations
+
+
+	
+
+
+
+
+
+
+

@@ -1,0 +1,47 @@
+@RestController
+public class GreetingController {
+
+    private static final Logger logger = LoggerFactory.getLogger(GreetingController.class);
+    
+    // 1. Get a Tracer instance from the global OpenTelemetry SDK
+    private final Tracer tracer = GlobalOpenTelemetry.getTracer("my-app-tracer");
+
+    // 2. Get a Meter and create a Counter metric
+    private final Meter meter = GlobalOpenTelemetry.getMeter("my-app-meter");
+    private final LongCounter greetingCounter = meter.counterBuilder("greetings.total")
+            .setDescription("Counts the total number of greetings served")
+            .setUnit("1")
+            .build();
+
+    @GetMapping("/hello/{name}")
+    public String sayHello(@PathVariable String name) {
+        logger.info("Handling /hello request for name: {}", name);
+        
+        // 3. Add an attribute to the current span (created by the auto-instrumentation)
+        Span.current().setAttribute("user.name", name);
+        
+        String greeting = createGreeting(name);
+        
+        // 4. Increment our custom counter
+        greetingCounter.add(1, Attributes.of(stringKey("user.type"), "normal"));
+
+        return greeting;
+    }
+
+    private String createGreeting(String name) {
+        // 5. Create a new, custom span for our specific business logic
+        Span span = tracer.spanBuilder("createGreeting-logic").startSpan();
+        // Use a try-with-resources block to ensure the span is always closed
+        try (Scope scope = span.makeCurrent()) {
+            span.setAttribute("greeting.name.length", name.length());
+            Thread.sleep(150);
+            return "Hello, " + name + "!";
+        } catch (InterruptedException e) {
+            span.setStatus(StatusCode.ERROR, "Thread interrupted");
+            Thread.currentThread().interrupt();
+            return "Error!";
+        } finally {
+            span.end(); // End the span
+        }
+    }
+}
