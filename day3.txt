@@ -1,8 +1,0 @@
-Profiler tools
-	-- JProfiler
-		-- Licenced
-		-- Best profiler 
-		-- Live metrics, heap dumps, cpu, memory utilisation, snapshots, recordings, allocations
-	-- VisualVM
-		-- open source
-		-- 
