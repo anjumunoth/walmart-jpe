@@ -1,0 +1,109 @@
+What is performance engineering ???
+	-- metrics
+		-- latency
+			-- response time
+			-- low (SLA defined)
+
+		-- errors and exception handling 
+		-- infrastructure -- capacity planning
+			-- memory
+			-- cpu
+		-- traffic pattern
+		-- boot time -- low
+		-- lazy loading
+		-- short responses and pagination
+		-- optimise code
+			-- proper data usage structure
+		-- logs messages -- rotate the log files
+			-- garbage collection
+			
+		-- monitor metrics -- classes, memory, heap, cpu
+		-- throughput
+			--requests per sec --tps
+			-- SLA -- high 
+		-- USER experience 
+
+
+Code 
+	-- Proper data structures
+		-- linked list is better than ArrayList -- too many manipulations
+		-- fixed or dynamic size
+	-- multithreading
+	-- caching
+	-- log messages -- minimum
+	-- closing the opened resources
+	-- exception handling
+	-- connection pooling
+	-- Keep the calculations whichever possible outside the loops
+	-- static -- only one instance-- shared by all the objects -- 
+		-- use it without creating objects
+		-- disadv -- inconsistency when used with multiple threads; memory -- lifetime -- during the entire of lifetime of class -- long lived objects -- memory is always retained -- application memory is constant 
+	-- network hops -- optimise 
+	-- conditional statements
+		-- logical and
+		-- if the element is present and then check for value
+	-- complexity of algorithms
+	-- strings vs string builders
+		-- modification -- string builders
+		-- 
+
+
+
+int [] dataArray = new int [20];// 80 fixed bytes 
+List<int> arrList=new ArrayList<int>();// better usage of memory when not sure of size
+
+
+
+
+for(int i=0;i<n;i++)
+{
+	int address=response.url.query;// where should this calculation happen
+	// some calculation based on address
+}
+
+
+No
+	-- address is same for each iteration
+	-- inside the for loop -- iteration -- allocation, calculation and deallocation
+	-- outside the for loop -- allocation and deallocation -- only once 
+
+
+string str="hello"
+for(int i=0;i<10;i++)
+{
+	str+=i;// new objects get created; heap gets consumed; memory leaks
+}
+
+
+
+jprofiler
+	-- paid tool
+		-- free trial version -- 7/10 days
+	-- one of the best tools for profiling
+	-- live metrics
+	-- cpu recording
+	-- memory recording/ heap snapshots
+	-- thread analysis
+	-- HTTP request
+	-- JDBC requests
+	-- attach to local app, remote app, K8s cluster
+	-- attach to only a running app
+	-- impact the app performance 
+	-- lower the impact -- sampling(lower overhead) or instrumentation 
+	
+
+
+Snapshot of heap memory 
+	-- once app starts
+	-- in the middle of app
+	-- when the app throws OOME
+
+
+
+generateLargeReportSlowly
+	-- taking a lot of time for execution
+		-- refactor the algorithm
+	-- taking up a lot of memory. but once gc happens , it gets reclaimed
+		-- lot of memory utilised for method execution 
+	--
+

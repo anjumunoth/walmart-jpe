@@ -1,0 +1,104 @@
+JVM
+	-- Write once, run anywhere
+	-- byte code
+	-- executing the code
+	-- handles the memory
+		-- stack, heap, metaspace(metadata and static), PC, native memory, TLAB
+	-- allocation and deallocation
+	-- deallocation -- GC -- automatic/manually -- need for memory
+	
+JDK 
+	-- JVM, java compiler
+ 
+
+heap
+	-- Objects
+	-- garbage collected
+stack
+	-- local variables
+	-- method addresses
+	-- method executions
+	-- references
+	-- stack memory -- method execution is over
+
+response time, throughput, latency, memory ---- capacity planning 
+
+
+Walmart
+normal day -- 5k
+black day sale -- 1 million
+one week after black day -- 10k
+
+Spike
+number of users, number of products, orders, deliveries --- cpu, memory -- horizontal scaling -- number of servers -- each server -- cpu and memory -- SLA throughput (99.99%), 
+
+scale the systems -- cpu and memory, network throughput 
+
+
+GC -- algorithms
+	-- default -- G1
+	-- serial 
+
+OutOfMemory 
+	-- G1
+		-- -Xmx512m
+		-- 254 mb
+		-- default(4050m) -- 2022mb objects were stored
+		-- 211 sec -- total time for which the app is running 
+		-- GC triggered -- 3797
+	-- SerialGC
+		-- Single worker
+		-- No evacuation
+		-- 384 sec
+		--default(4050m) 
+		-- 3777 mb objects were stored 
+		-- 45 GC cycles
+
+
+Which algorithm is better for this app???
+Serial GC -- 
+	-- Running for a longer time before throwing an exception
+	-- Availability
+	-- lesser GC cycles 
+	-- efficiency of memory used
+	-- STW pause ?????
+
+
+App
+	-- simple
+	-- single threaded
+	-- low heap memory (4050m)
+	-- Under the above scenarios -- serial is better
+
+G1 better
+	-- multi threaded
+	-- larger heap sizes
+	-- complex applications
+
+GC
+	-- minor cycle -- deallocate in young gen
+	-- major -- deallocate in young gen and old gen
+	-- mixed cycle -- G1 -- deallocate in young gen and some of the regions in old gen(regions with the highest garbage) 
+
+Stage 1:
+Marking stage -- find out the live and dead objects
+Sweep 
+
+STW pauses
+	-- Stop the world pauses
+	-- GC -- collecting/ reclaiming the memory from dead objects 
+		-- find the dead objects
+		-- move the live objects
+		-- promote from young gen to old gen
+		-- compaction -- defragmentation 
+		-- single thread / multiple threads
+		-- pause the app threads -- pause the app
+		-- entire gc cycle -- pause the app -- depends on GC algorithm
+		-- ZGC -- low pause time -- pause the app threads during the entire cycle
+		-- good user experience -- shorter STW, frequency of pauses -- lower -- 		-- number of GC cycles and duration of GC cycles and what phase of GC 
+
+Scenario 1
+	-- Total pause time : 40 sec; GC cycle -- 40
+Scenario 2: 
+	-- Total pause time -- 10 sec; GC cycle -- 400; -- more cpu spikes 
+
